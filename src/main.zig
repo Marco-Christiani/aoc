@@ -109,6 +109,81 @@ pub fn day1p2() void {
     }
 }
 
+pub fn day2() !void {
+    // const data =
+    //     \\Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
+    //     \\Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue
+    //     \\Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red
+    //     \\Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red
+    //     \\Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green
+    // ;
+    const data = @embedFile("day2.txt");
+    const max_red = 12;
+    const max_green = 13;
+    const max_blue = 14;
+    var sum: usize = 0;
+    var games_iter = std.mem.tokenizeScalar(u8, data, '\n');
+    while (games_iter.next()) |game| {
+        var game_and_draw_iter = std.mem.tokenizeSequence(u8, game, ": ");
+        var game_id_iter = std.mem.tokenizeScalar(u8, game_and_draw_iter.next().?, ' ');
+        _ = game_id_iter.next();
+        var game_id = try std.fmt.parseInt(usize, game_id_iter.next().?, 10);
+        var draws = std.mem.tokenizeSequence(u8, game_and_draw_iter.next().?, "; ");
+        var possible: bool = true;
+        while (draws.next()) |draw| {
+            var cube_iter = std.mem.tokenizeSequence(u8, draw, ", ");
+            while (cube_iter.next()) |cube| {
+                var item_iter = std.mem.tokenizeScalar(u8, cube, ' ');
+                const count_str = item_iter.next();
+                const color = item_iter.next();
+                const count = try std.fmt.parseInt(usize, count_str.?, 10);
+                if (std.mem.eql(u8, color.?, "red")) {
+                    if (count > max_red) possible = false;
+                } else if (std.mem.eql(u8, color.?, "green")) {
+                    if (count > max_green) possible = false;
+                } else if (std.mem.eql(u8, color.?, "blue")) {
+                    if (count > max_blue) possible = false;
+                }
+            }
+        }
+        if (possible) {
+            sum += game_id;
+        }
+    }
+    std.debug.print("part1: {d}\n", .{sum});
+    games_iter = std.mem.tokenizeScalar(u8, data, '\n');
+    sum = 0;
+    while (games_iter.next()) |game| {
+        var game_and_draw_iter = std.mem.tokenizeSequence(u8, game, ": ");
+        var game_id_iter = std.mem.tokenizeScalar(u8, game_and_draw_iter.next().?, ' ');
+        _ = game_id_iter.next();
+        var game_id = try std.fmt.parseInt(usize, game_id_iter.next().?, 10);
+        _ = game_id;
+        var draws = std.mem.tokenizeSequence(u8, game_and_draw_iter.next().?, "; ");
+        var min_red: usize = 0;
+        var min_green: usize = 0;
+        var min_blue: usize = 0;
+        while (draws.next()) |draw| {
+            var cube_iter = std.mem.tokenizeSequence(u8, draw, ", ");
+            while (cube_iter.next()) |cube| {
+                var item_iter = std.mem.tokenizeScalar(u8, cube, ' ');
+                const count_str = item_iter.next();
+                const color = item_iter.next();
+                const count = try std.fmt.parseInt(usize, count_str.?, 10);
+                if (std.mem.eql(u8, color.?, "red")) {
+                    if (count > min_red) min_red = count;
+                } else if (std.mem.eql(u8, color.?, "green")) {
+                    if (count > min_green) min_green = count;
+                } else if (std.mem.eql(u8, color.?, "blue")) {
+                    if (count > min_blue) min_blue = count;
+                }
+            }
+        }
+        sum += min_red * min_green * min_blue;
+    }
+    std.debug.print("part2: {d}\n", .{sum});
+}
+
 pub fn main() !void {
     // Prints to stderr (it's a shortcut based on `std.io.getStdErr()`)
     std.debug.print("All your {s} are belong to us.\n", .{"codebase"});
@@ -128,4 +203,8 @@ pub fn main() !void {
 test "day 1" {
     day1();
     day1p2();
+}
+
+test "day 2" {
+    try day2();
 }
