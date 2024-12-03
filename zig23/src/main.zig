@@ -309,6 +309,58 @@ fn day4p2() !u32 {
     return total_cards;
 }
 
+fn day5() !usize {
+    const data =
+        \\seeds: 79 14 55 13
+        \\
+        \\seed-to-soil map:
+        \\50 98 2
+        \\52 50 48
+        \\
+        \\soil-to-fertilizer map:
+        \\0 15 37
+        \\37 52 2
+        \\39 0 15
+        \\
+        \\fertilizer-to-water map:
+        \\49 53 8
+        \\0 11 42
+        \\42 0 7
+        \\57 7 4
+        \\
+        \\water-to-light map:
+        \\88 18 7
+        \\18 25 70
+        \\
+        \\light-to-temperature map:
+        \\45 77 23
+        \\81 45 19
+        \\68 64 13
+        \\
+        \\temperature-to-humidity map:
+        \\0 69 1
+        \\1 0 69
+        \\
+        \\humidity-to-location map:
+        \\60 56 37
+        \\56 93 4
+    ;
+    var line_iter = std.mem.tokenizeScalar(u8, data, '\n');
+    var i: usize = 0;
+    _ = i;
+    var first_line = line_iter.next().?;
+    var seeds: [][]u8 = undefined;
+    if (std.mem.startsWith(u8, first_line, "seeds: ")) {
+        var temp = std.mem.tokenizeScalar(u8, first_line["seeds: ".len..], ' ');
+        temp
+        seeds = temp.next();
+    }
+    std.debug.print("{s}", .{seeds});
+    // while (line_iter.next()) |line| : (i += 1) {
+
+    // }
+}
+
 fn sum_slice(slice: []u32) u32 {
     var total: u32 = 0;
     for (slice) |s| {
@@ -353,23 +405,31 @@ fn count_intersection_arr(comptime T: type, comptime arr1: []const T, comptime a
     return result;
 }
 
-test "day 1" {
-    day1();
-    day1p2();
-}
+// test "day 1" {
+//     day1();
+//     day1p2();
+// }
 
-test "day 2" {
-    try day2();
-}
+// test "day 2" {
+//     try day2();
+// }
 
-test "day 4" {
-    const part1: u32 = try day4();
-    const part2: u32 = try day4p2();
+// test "day 4" {
+//     const part1: u32 = try day4();
+//     const part2: u32 = try day4p2();
+//     std.debug.print("part1: {d}\n", .{part1});
+//     std.debug.print("part2: {d}\n", .{part2});
+// }
+
+test "day 5" {
+    const part1: u32 = try day5();
     std.debug.print("part1: {d}\n", .{part1});
-    std.debug.print("part2: {d}\n", .{part2});
 }
 
-test "count intersection" {
-    const count = try count_intersection_arr(usize, &[_]usize{ 1, 2, 3 }, &[_]usize{ 1, 2, 3 });
-    std.debug.print("{d}\n", .{count});
-}
+// test "count intersection" {
+//     const count = try count_intersection_arr(usize, &[_]usize{ 1, 2, 3 }, &[_]usize{ 1, 2, 3 });
+//     std.debug.print("{d}\n", .{count});
+// }
+
+// t0 <= x <= t0+k
+// t0-k <= x-k <= t0
